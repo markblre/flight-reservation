@@ -4,9 +4,17 @@ public class Aeroport {
 
     private String nom;
 
-    private String ville;
+    private final Ville ville;
 
-    public Aeroport() {
+    public Aeroport(String nom, Ville ville) {
+        if (nom == null || ville == null) {
+            throw new IllegalArgumentException("nom and ville cannot be null");
+        }
+
+        this.nom = nom;
+        this.ville = ville;
+
+        ville.addAeroportWithoutBidirectional(this);
     }
 
     public String getNom() {
@@ -17,11 +25,7 @@ public class Aeroport {
         this.nom = nom;
     }
 
-    public String getVille() {
+    public Ville getVille() {
         return ville;
-    }
-
-    public void setVille(String ville) {
-        this.ville = ville;
     }
 }
