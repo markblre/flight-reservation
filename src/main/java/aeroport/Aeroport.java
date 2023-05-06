@@ -37,7 +37,7 @@ public class Aeroport {
         return villesDesservies;
     }
 
-    public void addVolVers(Ville ville) {
+    protected void addVolVers(Ville ville) {
         if (this.villesDesservies.containsKey(ville)) {
             this.villesDesservies.put(ville, villesDesservies.get(ville) + 1);
         } else {
@@ -46,7 +46,7 @@ public class Aeroport {
         ville.addVolDepuisWithoutBidirectional(this);
     }
 
-    public void removeVolVers(Ville ville) {
+    protected void removeVolVers(Ville ville) {
         if (this.villesDesservies.containsKey(ville)) {
             if (this.villesDesservies.get(ville) == 1) {
                 this.villesDesservies.remove(ville);

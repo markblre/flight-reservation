@@ -31,12 +31,15 @@ public class Ville {
         return aeroports;
     }
 
-    // Si un aeroport et definitivement fermé. (inutile de modifier l'attribut ville de l'aeroport car il n'existe plus)
     public void removeAeroport(Aeroport aeroport) {
+        if (!aeroport.getVillesDesservies().isEmpty()) {
+            throw new IllegalStateException("L'aeroport est toujours desservi par des vols.");
+        }
         this.aeroports.remove(aeroport);
+        // inutile de modifier l'attribut ville de l'aeroport car il n'existe plus
     }
 
-    public void addAeroportWithoutBidirectional(Aeroport aeroport) {
+    protected void addAeroportWithoutBidirectional(Aeroport aeroport) {
         this.aeroports.add(aeroport);
     }
 
@@ -44,7 +47,7 @@ public class Ville {
         return aeroportsDesservant;
     }
 
-    public void addVolDepuisWithoutBidirectional(Aeroport aeroport) {
+    protected void addVolDepuisWithoutBidirectional(Aeroport aeroport) {
         if (this.aeroportsDesservant.containsKey(aeroport)) {
             this.aeroportsDesservant.put(aeroport, this.aeroportsDesservant.get(aeroport) + 1);
         } else {
@@ -52,7 +55,7 @@ public class Ville {
         }
     }
 
-    public void removeVolDepuisWithoutBidirectional(Aeroport aeroport) {
+    protected void removeVolDepuisWithoutBidirectional(Aeroport aeroport) {
         if (this.aeroportsDesservant.containsKey(aeroport)) {
             if (this.aeroportsDesservant.get(aeroport) == 1) {
                 this.aeroportsDesservant.remove(aeroport);
