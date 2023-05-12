@@ -1,63 +1,83 @@
 package aeroport;
 
-import java.util.ArrayList;
-import java.util.Collection;
 
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Classe representant une compagnie
+ */
 public class Compagnie {
 
-    private String name;
+    /**
+     * Le nom de la compagnie
+     */
+    private String nom;
 
-    private Collection<Vol> vols = new ArrayList<>();
+    /**
+     * La liste des vols de la compagnie
+     */
+    private final Set<Vol> vols = new HashSet<>();
 
-
-    public Compagnie() {
+    /**
+     * Constructeur de la classe Compagnie
+     *
+     * @param nom le nom de la compagnie
+     * @exception IllegalArgumentException si le nom est null
+     */
+    public Compagnie(String nom) {
+        if (nom == null) {
+            throw new IllegalArgumentException("nom cannot be null");
+        }
+        this.nom = nom;
     }
 
-    public String getName() {
-        return name;
+    /**
+     * Retourne le nom de la compagnie
+     *
+     * @return le nom de la compagnie
+     */
+    public String getNom() {
+        return nom;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    /**
+     * Modifie le nom de la compagnie
+     *
+     * @param nom le nouveau nom de la compagnie
+     * @exception IllegalArgumentException si le nom est null
+     */
+    public void setNom(String nom) {
+        if(nom == null){
+            throw new IllegalArgumentException("nom cannot be null");
+        }
+        this.nom = nom;
     }
 
-    public Collection<Vol> getVols() {
+    /**
+     * Retourne la liste des vols de la compagnie
+     *
+     * @return la liste des vols de la compagnie
+     */
+    public Set<Vol> getVols() {
         return vols;
     }
 
-    public void setVols(Collection<Vol> vols) {
-        for(Vol v : this.vols){
-            v.setCompagnieWithoutBidirectional(null);
-        }
-
-        this.vols = vols;
-
-        if(this.vols != null) {
-            for (Vol v : this.vols) {
-                v.setCompagnieWithoutBidirectional(this);
-            }
-        }
-    }
-
-    public void addVol(Vol vol){
-        vol.setCompagnieWithoutBidirectional(this);
-        this.vols.add(vol);
-    }
-
-    public void removeVol(Vol vol){
-        vol.setCompagnieWithoutBidirectional(null);
-        this.vols.remove(vol);
-    }
-
-
-    protected void setVolsWithoutBidirectional(Collection<Vol> vols) {
-        this.vols = vols;
-    }
-
+    /**
+     * Ajoute un vol à la liste des vols de la compagnie
+     *
+     * @param vol le vol à ajouter
+     * @exception IllegalArgumentException si le vol est null
+     */
     protected void addVolWithoutBidirectional(Vol vol){
         this.vols.add(vol);
     }
 
+    /**
+     * Supprime un vol de la liste des vols de la compagnie
+     *
+     * @param vol le vol à supprimer
+     */
     protected void removeVolWithoutBidirectional(Vol vol){
         this.vols.remove(vol);
     }
