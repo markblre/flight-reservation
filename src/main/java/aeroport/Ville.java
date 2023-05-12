@@ -1,8 +1,7 @@
 package aeroport;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Classe representant une ville
@@ -16,12 +15,12 @@ public class Ville {
     /**
      * La liste des aeroports de la ville
      */
-    private final Collection<Aeroport> aeroports = new ArrayList<>();
+    private final Set<Aeroport> aeroports = new HashSet<>();
 
     /**
-     * La liste des aeroports qui desservent la ville avec le nombre de vol
+     * La liste des aeroports qui desservent la ville
      */
-    private final Map<Aeroport, Integer> aeroportsDesservant = new java.util.HashMap<>(); // Integer = nombre de vol provenant de l'aeroport
+    private final Set<Aeroport> aeroportsDesservant = new HashSet<>();
 
     /**
      * Constructeur de la classe Ville
@@ -64,7 +63,7 @@ public class Ville {
      *
      * @return la liste des aeroports de la ville
      */
-    public Collection<Aeroport> getAeroports() {
+    public Set<Aeroport> getAeroports() {
         return aeroports;
     }
 
@@ -87,39 +86,29 @@ public class Ville {
     }
 
     /**
-     * Retourne la liste des aeroports qui desservent la ville avec le nombre de vol
+     * Retourne la liste des aeroports qui desservent la ville
      *
-     * @return une map qui contient les aeroports qui desservent la ville avec le nombre de vol
+     * @return les aeroports qui desservent la ville
      */
-    public Map<Aeroport, Integer> getAeroportsDesservant() {
+    public Set<Aeroport> getAeroportsDesservant() {
         return aeroportsDesservant;
     }
 
     /**
-     * Comptabilise un vol de plus de l'eroport vers la ville
+     * Ajoute l'aeroport à la liste des aeroports qui desservent la ville
      *
-     * @param aeroport l'aeroport depuis lequel le vol est ajoute
+     * @param aeroport l'aeroport à ajouter
      */
-    protected void addVolDepuisWithoutBidirectional(Aeroport aeroport) {
-        if (this.aeroportsDesservant.containsKey(aeroport)) {
-            this.aeroportsDesservant.put(aeroport, this.aeroportsDesservant.get(aeroport) + 1);
-        } else {
-            this.aeroportsDesservant.put(aeroport, 1);
-        }
+    protected void addAeroportDesservantWithoutBidirectional(Aeroport aeroport) {
+        this.aeroportsDesservant.add(aeroport);
     }
 
     /**
-     * Comptabilise un vol de moins de l'aeroport vers la ville
+     * Supprime l'aeroport de la liste des aeroports qui desservent la ville
      *
-     * @param aeroport l'aeroport depuis lequel le vol est supprime
+     * @param aeroport l'aeroport à supprimer
      */
-    protected void removeVolDepuisWithoutBidirectional(Aeroport aeroport) {
-        if (this.aeroportsDesservant.containsKey(aeroport)) {
-            if (this.aeroportsDesservant.get(aeroport) == 1) {
-                this.aeroportsDesservant.remove(aeroport);
-            } else {
-                this.aeroportsDesservant.put(aeroport, this.aeroportsDesservant.get(aeroport) - 1);
-            }
-        }
+    protected void removeAeroportDesservantWithoutBidirectional(Aeroport aeroport) {
+        this.aeroportsDesservant.remove(aeroport);
     }
 }

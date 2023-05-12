@@ -1,6 +1,7 @@
 package aeroport;
 
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Classe representant un aeroport
@@ -18,9 +19,9 @@ public class Aeroport {
     private Ville ville;
 
     /**
-     * La liste des villes desservies par l'aeroport avec le nombre de vol
+     * La liste des villes desservies par l'aeroport
      */
-    private final Map<Ville, Integer> villesDesservies = new java.util.HashMap<>(); // Integer = nombre de vol vers la ville
+    private final Set<Ville> villesDesservies = new HashSet<>();
 
     /**
      * Constructeur de la classe Aeroport
@@ -73,53 +74,49 @@ public class Aeroport {
      *
      * @return la liste des villes desservies par l'aeroport
      */
-    public Map<Ville, Integer> getVillesDesservies() {
+    public Set<Ville> getVillesDesservies() {
         return villesDesservies;
     }
 
     /**
-     * Comptabilise un vol de plus de l'aeroport vers la ville
+     * Ajoute la ville aux villes desservies par l'aéroport et met à jour la ville
      *
-     * @param ville la ville d'arrivée du vol
+     * @param ville la ville desservie par l'aéroport
      * @exception IllegalArgumentException si la ville est null
      */
-    protected void addVolVers(Ville ville) {
-        if (this.villesDesservies.containsKey(ville)) {
-            this.villesDesservies.put(ville, villesDesservies.get(ville) + 1);
-        } else {
-            this.villesDesservies.put(ville, 1);
+    public void addVilleDesservie(Ville ville) {
+        if (ville == null) {
+            throw new IllegalArgumentException("ville ne peut pas être null");
         }
-        ville.addVolDepuisWithoutBidirectional(this);
+
+        this.villesDesservies.add(ville);
+        ville.addAeroportDesservantWithoutBidirectional(this);
     }
 
     /**
-     * Comptabilise un vol de moins de l'aeroport vers la ville
+     * Supprime la ville des villes desservies par l'aéroport et met à jour la ville
      *
-     * @param ville la ville d'arrivée du vol
+     * @param ville la ville qui n'est plu desservie par l'aéroport
      * @exception IllegalArgumentException si la ville est null
      */
-    protected void removeVolVers(Ville ville) {
-        if (this.villesDesservies.containsKey(ville)) {
-            if (this.villesDesservies.get(ville) == 1) {
-                this.villesDesservies.remove(ville);
-            } else {
-                this.villesDesservies.put(ville, villesDesservies.get(ville) - 1);
-            }
-            ville.removeVolDepuisWithoutBidirectional(this);
+    public void RemoveVilleDesservie(Ville ville) {
+        if (ville == null) {
+            throw new IllegalArgumentException("ville ne peut pas être null");
         }
+
+        this.villesDesservies.remove(ville);
+        ville.removeAeroportDesservantWithoutBidirectional(this);
     }
 
     /**
-     * Supprime l'aeroport de la ville
-     *
-     * @exception IllegalStateException si l'aeroport est toujours desservi par des vols
+     * Supprime l'aeroport et met à jour la ville
      */
     public void removeAeroport() {
-        if (!this.villesDesservies.isEmpty()) {
-            throw new IllegalStateException("L'aeroport est toujours desservi par des vols.");
-        }
-        // TODO : Vérifier que des vols ne partent pas de l'aeroport
+        // TODO : Vérifier que plus aucun vol ne part ou n'arrive à cet aéroport
         this.ville.removeAeroportWithoutBidirectional(this);
+        for(Ville ville : this.villesDesservies) {
+            ville.removeAeroportDesservantWithoutBidirectional(this);
+        }
         this.ville = null;
     }
 }
