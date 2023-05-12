@@ -80,15 +80,10 @@ public class Ville {
     /**
      * Supprime l'aeroport de la ville
      *
-     * @param aeroport l'aeroport à ajouter
-     * @exception IllegalArgumentException si l'aeroport est toujours desservi par des vols
+     * @param aeroport l'aeroport à supprimer
      */
-    public void removeAeroport(Aeroport aeroport) {
-        if (!aeroport.getVillesDesservies().isEmpty()) {
-            throw new IllegalStateException("L'aeroport est toujours desservi par des vols.");
-        }
+    protected void removeAeroportWithoutBidirectional(Aeroport aeroport) {
         this.aeroports.remove(aeroport);
-        // inutile de modifier l'attribut ville de l'aeroport car un aeroport ne peut pas changer de ville (objet "abandonné")
     }
 
     /**

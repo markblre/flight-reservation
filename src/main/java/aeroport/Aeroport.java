@@ -15,7 +15,7 @@ public class Aeroport {
     /**
      * La ville de l'aeroport
      */
-    private final Ville ville;
+    private Ville ville;
 
     /**
      * La liste des villes desservies par l'aeroport avec le nombre de vol
@@ -107,5 +107,19 @@ public class Aeroport {
             }
             ville.removeVolDepuisWithoutBidirectional(this);
         }
+    }
+
+    /**
+     * Supprime l'aeroport de la ville
+     *
+     * @exception IllegalStateException si l'aeroport est toujours desservi par des vols
+     */
+    public void removeAeroport() {
+        if (!this.villesDesservies.isEmpty()) {
+            throw new IllegalStateException("L'aeroport est toujours desservi par des vols.");
+        }
+        // TODO : Vérifier que des vols ne partent pas de l'aeroport
+        this.ville.removeAeroportWithoutBidirectional(this);
+        this.ville = null;
     }
 }
