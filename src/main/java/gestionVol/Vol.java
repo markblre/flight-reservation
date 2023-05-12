@@ -1,4 +1,4 @@
-package aeroport;
+package gestionVol;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -250,7 +250,7 @@ public class Vol {
      */
     public void ouvrir() {
         if(this.compagnie == null || this.depart == null || this.arrivee == null) {
-            throw new IllegalStateException("Le vol doit avoir une compagnie, un aeroport de depart et un aeroport d'arrivee pour être ouvert à la reservation";
+            throw new IllegalStateException("Le vol doit avoir une compagnie, un aeroport de depart et un aeroport d'arrivee pour être ouvert à la reservation");
         }
         this.reservationOuverte = true;
     }
