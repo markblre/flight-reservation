@@ -1,11 +1,15 @@
 package gestionVol;
 
+import reservation.Reservation;
+
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Classe representant un vol
+ * Classe représentant un vol
  */
 public class Vol {
 
@@ -50,6 +54,21 @@ public class Vol {
     private boolean reservationOuverte;
 
     /**
+     * Le nombre de places disponibles
+     */
+    private int placesDisponibles;
+
+    /**
+     * Le prix d'une place
+     */
+    private double prix;
+
+    /**
+     * Les réservations du vol
+     */
+    private final Set<Reservation> reservations = new HashSet<>();
+
+    /**
      * Constructeur de la classe Vol
      *
      * @param numero le numéro du vol
@@ -58,15 +77,24 @@ public class Vol {
      * @param arrivee l'aéroport d'arrivée du vol
      * @param dateDepart la date de depart du vol
      * @param dateArrivee la date d'arrivée du vol
+     * @param placesDisponibles le nombre de places disponibles
      * @exception IllegalArgumentException si le numero, la compagnie, l'aéroport de depart, l'aéroport d'arrivée, la date de depart ou la date d'arrivée est null
      * @exception IllegalArgumentException si la date de depart est après la date d'arrivée
+     * @exception IllegalArgumentException si le nombre de places disponibles est négatif
+     * @exception IllegalArgumentException si le prix est négatif
      */
-    public Vol(String numero, Compagnie compagnie, Aeroport depart, Aeroport arrivee, ZonedDateTime dateDepart, ZonedDateTime dateArrivee) {
+    public Vol(String numero, Compagnie compagnie, Aeroport depart, Aeroport arrivee, ZonedDateTime dateDepart, ZonedDateTime dateArrivee, int placesDisponibles, double prix) {
         if(numero == null || compagnie == null || depart == null || arrivee == null || dateDepart == null || dateArrivee == null) {
             throw new IllegalArgumentException("numero, compagnie, depart, arrivée, dateDepart and dateArrivee cannot be null");
         }
         if(dateDepart.isAfter(dateArrivee) || dateDepart.isEqual(dateArrivee)) {
             throw new IllegalArgumentException("dateDepart doit être avant dateArrivee");
+        }
+        if(placesDisponibles < 0) {
+            throw new IllegalArgumentException("placesDisponibles doit être positif");
+        }
+        if(prix < 0) {
+            throw new IllegalArgumentException("prix doit être positif");
         }
 
         this.numero = numero;
@@ -83,6 +111,9 @@ public class Vol {
         this.dateArrivee = dateArrivee;
 
         this.reservationOuverte = false;
+
+        this.placesDisponibles = placesDisponibles;
+        this.prix = prix;
     }
 
     /**
@@ -307,6 +338,78 @@ public class Vol {
     }
 
     /**
+     * Retourne le nombre de places disponibles du vol
+     *
+     * @return le nombre de places disponibles du vol
+     */
+    public int getPlacesDisponibles() {
+        return placesDisponibles;
+    }
+
+    /**
+     * Modifie le nombre de places disponibles du vol
+     *
+     * @param placesDisponibles le nouveau nombre de places disponibles du vol
+     * @exception IllegalArgumentException si le nombre de places disponibles est négatif
+     */
+    public void setPlacesDisponibles(int placesDisponibles) {
+        if(placesDisponibles < 0) {
+            throw new IllegalArgumentException("placesDisponibles doit être positif");
+        }
+        this.placesDisponibles = placesDisponibles;
+    }
+
+    /**
+     * Retourne le prix d'une place du vol
+     *
+     * @return le prix d'une place du vol
+     */
+    public double getPrix() {
+        return prix;
+    }
+
+    /**
+     * Modifie le prix d'une place du vol
+     *
+     * @param prix le nouveau prix d'une place du vol
+     * @exception IllegalArgumentException si le prix est négatif
+     */
+    public void setPrix(double prix) {
+        if(prix < 0) {
+            throw new IllegalArgumentException("prix doit être positif");
+        }
+
+        this.prix = prix;
+    }
+
+    /**
+     * Retourne les réservations du vol
+     *
+     * @return les réservations du vol
+     */
+    public Set<Reservation> getReservations() {
+        return reservations;
+    }
+
+    /**
+     * Ajoute une réservation au vol
+     *
+     * @param reservation la réservation à ajouter au vol
+     * @exception IllegalArgumentException si la réservation est null
+     * @exception IllegalArgumentException si la réservation n'est pas compatible avec le vol
+     */
+    public void addReservationWithoutBidirectional(Reservation reservation) {
+        if(reservation == null) {
+            throw new IllegalArgumentException("reservation cannot be null");
+        }
+        if(!reservation.getVol().equals(this)) {
+            throw new IllegalArgumentException("La reservation doit être compatible avec le vol");
+        }
+
+        this.reservations.add(reservation);
+    }
+
+    /**
      * Supprime le vol de la compagnie, de l'aéroport de départ et de l'aéroport d'arrivée
      */
     public void removeVol() {
@@ -317,6 +420,9 @@ public class Vol {
         this.depart = null;
         this.arrivee.removeVolAArriveeWithoutBidirectional(this);
         this.arrivee = null;
+        for (Reservation reservation : this.reservations) {
+            reservation.annulerParCompagnie();
+        }
     }
 
     @Override
