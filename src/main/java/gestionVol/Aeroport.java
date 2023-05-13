@@ -34,6 +34,11 @@ public class Aeroport {
     private final Set<Vol> volsAArrivee = new HashSet<>();
 
     /**
+     * La liste des escales prévues à l'aeroport
+     */
+    private final Set<Escale> escales = new HashSet<>();
+
+    /**
      * Constructeur de la classe Aeroport
      *
      * @param nom le nom de l'aeroport
@@ -186,6 +191,41 @@ public class Aeroport {
         }
 
         this.volsAArrivee.remove(vol);
+    }
+
+    /**
+     * Retourne la liste des escales prévues à l'aeroport
+     *
+     * @return la liste des escales prévues à l'aeroport
+     */
+    public Set<Escale> getEscales() {
+        return escales;
+    }
+
+    /**
+     * Ajoute une escale à l'aeroport
+     *
+     * @param escale l'escale à ajouter à l'aeroport
+     */
+    protected void addEscaleWithoutBidirectional(Escale escale) {
+        if (escale == null) {
+            throw new IllegalArgumentException("escale ne peut pas être null");
+        }
+
+        this.escales.add(escale);
+    }
+
+    /**
+     * Supprime une escale de l'aeroport
+     *
+     * @param escale l'escale à supprimer de l'aeroport
+     */
+    public void removeEscaleWithoutBidirectional(Escale escale) {
+        if (escale == null) {
+            throw new IllegalArgumentException("escale ne peut pas être null");
+        }
+
+        this.escales.remove(escale);
     }
 
     /**

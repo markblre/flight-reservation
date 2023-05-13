@@ -2,6 +2,7 @@ package gestionVol;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
+import java.util.TreeSet;
 
 /**
  * Classe representant un vol
@@ -27,6 +28,11 @@ public class Vol {
      * L'aéroport d'arrivée du vol
      */
     private Aeroport arrivee;
+
+    /**
+     * Les escales du vol dans l'ordre
+     */
+    private final TreeSet<Escale> escales = new TreeSet<>();
 
     /**
      * La date de départ du vol
@@ -241,6 +247,44 @@ public class Vol {
      */
     public boolean isReservationOuverte() {
         return reservationOuverte;
+    }
+
+    /**
+     * Retourne les escales du vol
+     *
+     * @return les escales du vol
+     */
+    public TreeSet<Escale> getEscales() {
+        return escales;
+    }
+
+    /**
+     * Ajoute une escale au vol
+     *
+     * @param vol le vol de l'escale
+     * @param aeroport l'aéroport de l'escale
+     * @param heureArrivee l'heure d'arrivée de l'escale
+     * @param heureDepart l'heure de départ de l'escale
+     * @exception IllegalArgumentException si l'escale n'est pas compatible avec une autre escale ou l'arrivée du vol
+     */
+    public void addEscale(Vol vol, Aeroport aeroport, ZonedDateTime heureArrivee, ZonedDateTime heureDepart) {
+        Escale nouvelleEscale = new Escale(vol, aeroport, heureArrivee, heureDepart);
+        this.escales.add(nouvelleEscale);
+
+        // On vérifie si l'escale est possible, sinon on l'enlève
+        Escale escaleSuivante = this.escales.higher(nouvelleEscale);
+
+        if(escaleSuivante != null) {
+            if(escaleSuivante.getHeureArrivee().isBefore(heureDepart) || escaleSuivante.getHeureArrivee().isEqual(heureDepart)) {
+                nouvelleEscale.removeEscale();
+                this.escales.remove(nouvelleEscale);
+                throw new IllegalArgumentException("L'escale doit se terminer avant la prochaine escale");
+            }
+        } else if (this.dateArrivee.isBefore(heureDepart) || this.dateArrivee.isEqual(heureDepart)) {
+            nouvelleEscale.removeEscale();
+            this.escales.remove(nouvelleEscale);
+            throw new IllegalArgumentException("L'escale doit se terminer avant la date d'arrivee");
+        }
     }
 
     /**
