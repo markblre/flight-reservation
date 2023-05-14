@@ -78,6 +78,7 @@ public class Vol {
      * @param dateDepart la date de depart du vol
      * @param dateArrivee la date d'arrivée du vol
      * @param placesDisponibles le nombre de places disponibles
+     * @param prix le prix d'une place
      * @exception IllegalArgumentException si le numero, la compagnie, l'aéroport de depart, l'aéroport d'arrivée, la date de depart ou la date d'arrivée est null
      * @exception IllegalArgumentException si la date de depart est après la date d'arrivée
      * @exception IllegalArgumentException si le nombre de places disponibles est négatif
@@ -292,14 +293,15 @@ public class Vol {
     /**
      * Ajoute une escale au vol
      *
-     * @param vol le vol de l'escale
      * @param aeroport l'aéroport de l'escale
      * @param heureArrivee l'heure d'arrivée de l'escale
      * @param heureDepart l'heure de départ de l'escale
      * @exception IllegalArgumentException si l'escale n'est pas compatible avec une autre escale ou l'arrivée du vol
+     *
+     * @return l'escale ajoutée
      */
-    public void addEscale(Vol vol, Aeroport aeroport, ZonedDateTime heureArrivee, ZonedDateTime heureDepart) {
-        Escale nouvelleEscale = new Escale(vol, aeroport, heureArrivee, heureDepart);
+    public Escale addEscale(Aeroport aeroport, ZonedDateTime heureArrivee, ZonedDateTime heureDepart) {
+        Escale nouvelleEscale = new Escale(this, aeroport, heureArrivee, heureDepart);
         this.escales.add(nouvelleEscale);
 
         // On vérifie si l'escale est possible, sinon on l'enlève
@@ -316,6 +318,8 @@ public class Vol {
             this.escales.remove(nouvelleEscale);
             throw new IllegalArgumentException("L'escale doit se terminer avant la date d'arrivee");
         }
+
+        return nouvelleEscale;
     }
 
     /**
