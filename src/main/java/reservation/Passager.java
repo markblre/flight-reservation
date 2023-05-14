@@ -104,4 +104,20 @@ public class Passager {
 
         this.reservations.add(reservation);
     }
+
+    /**
+     * Supprime une réservation de la liste des réservations du passager
+     *
+     * @param reservation la réservation à supprimer
+     * @exception IllegalArgumentException si la réservation est null
+     */
+    protected void removeReservationWithoutBidirectional(Reservation reservation) {
+        if(reservation == null) {
+            throw new IllegalArgumentException("reservation cannot be null");
+        }
+
+        this.reservations.remove(reservation);
+    }
+
+
 }

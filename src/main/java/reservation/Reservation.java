@@ -155,6 +155,7 @@ public class Reservation {
         }
 
         if (this.etat == EtatReservation.EN_ATTENTE) {
+            passager.removeReservationWithoutBidirectional(this);
             this.passagers.remove(passager);
         } else {
             throw new IllegalStateException("Impossible de supprimer un passager : la réservation est payée, confirmée ou annulée");
