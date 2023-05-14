@@ -323,6 +323,25 @@ public class Vol {
     }
 
     /**
+     * Supprime une escale du vol
+     *
+     * @param escale l'escale à supprimer
+     * @exception IllegalArgumentException si l'escale est null
+     * @exception IllegalArgumentException si l'escale n'est pas dans le vol
+     */
+    public void removeEscale(Escale escale) {
+        if (escale == null) {
+            throw new IllegalArgumentException("escale cannot be null");
+        }
+        if (!this.escales.contains(escale)) {
+            throw new IllegalArgumentException("L'escale n'est pas dans le vol");
+        }
+
+        escale.removeEscale();
+        this.escales.remove(escale);
+    }
+
+    /**
      * Ouvre le vol à la réservation
      *
      * @exception IllegalStateException si le vol n'a pas de compagnie, d'aéroport de depart ou d'aéroport d'arrivée
