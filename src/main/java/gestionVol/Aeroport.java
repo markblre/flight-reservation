@@ -114,7 +114,7 @@ public class Aeroport {
      * @param ville la ville qui n'est plu desservie par l'aéroport
      * @exception IllegalArgumentException si la ville est null
      */
-    public void RemoveVilleDesservie(Ville ville) {
+    public void removeVilleDesservie(Ville ville) {
         if (ville == null) {
             throw new IllegalArgumentException("ville ne peut pas être null");
         }
