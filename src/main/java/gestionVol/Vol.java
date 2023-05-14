@@ -294,26 +294,47 @@ public class Vol {
      * Ajoute une escale au vol
      *
      * @param aeroport l'aéroport de l'escale
-     * @param heureArrivee l'heure d'arrivée de l'escale
-     * @param heureDepart l'heure de départ de l'escale
-     * @exception IllegalArgumentException si l'escale n'est pas compatible avec une autre escale ou l'arrivée du vol
+     * @param dateArrivee la date d'arrivée de l'escale
+     * @param dateDepart la date de départ de l'escale
+     * @exception IllegalArgumentException si la date d'arrivée est après la date de départ
+     * @exception IllegalArgumentException si l'escale n'est pas compatible avec une autre escale, le départ ou l'arrivée du vol
      *
      * @return l'escale ajoutée
      */
-    public Escale addEscale(Aeroport aeroport, ZonedDateTime heureArrivee, ZonedDateTime heureDepart) {
-        Escale nouvelleEscale = new Escale(this, aeroport, heureArrivee, heureDepart);
+    public Escale addEscale(Aeroport aeroport, ZonedDateTime dateArrivee, ZonedDateTime dateDepart) {
+        Escale nouvelleEscale = new Escale(this, aeroport, dateArrivee, dateDepart);
         this.escales.add(nouvelleEscale);
 
         // On vérifie si l'escale est possible, sinon on l'enlève
+        if(dateArrivee.isAfter(dateDepart) || dateArrivee.isEqual(dateDepart)) {
+            nouvelleEscale.removeEscale();
+            this.escales.remove(nouvelleEscale);
+            throw new IllegalArgumentException("L'escale doit débuter avant la fin de l'escale");
+        }
+
+        Escale escalePrecedente = this.escales.lower(nouvelleEscale);
+
+        if(escalePrecedente != null) {
+            if(escalePrecedente.getDateDepart().isAfter(dateArrivee) || escalePrecedente.getDateDepart().isEqual(dateArrivee)) {
+                nouvelleEscale.removeEscale();
+                this.escales.remove(nouvelleEscale);
+                throw new IllegalArgumentException("L'escale doit débuter après la précédente escale");
+            }
+        } else if (this.dateDepart.isAfter(dateArrivee) || this.dateDepart.isEqual(dateArrivee)) {
+            nouvelleEscale.removeEscale();
+            this.escales.remove(nouvelleEscale);
+            throw new IllegalArgumentException("L'escale doit débuter après le départ du vol");
+        }
+
         Escale escaleSuivante = this.escales.higher(nouvelleEscale);
 
         if(escaleSuivante != null) {
-            if(escaleSuivante.getDateArrivee().isBefore(heureDepart) || escaleSuivante.getDateArrivee().isEqual(heureDepart)) {
+            if(escaleSuivante.getDateArrivee().isBefore(dateDepart) || escaleSuivante.getDateArrivee().isEqual(dateDepart)) {
                 nouvelleEscale.removeEscale();
                 this.escales.remove(nouvelleEscale);
                 throw new IllegalArgumentException("L'escale doit se terminer avant la prochaine escale");
             }
-        } else if (this.dateArrivee.isBefore(heureDepart) || this.dateArrivee.isEqual(heureDepart)) {
+        } else if (this.dateArrivee.isBefore(dateDepart) || this.dateArrivee.isEqual(dateDepart)) {
             nouvelleEscale.removeEscale();
             this.escales.remove(nouvelleEscale);
             throw new IllegalArgumentException("L'escale doit se terminer avant la date d'arrivee");
