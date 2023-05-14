@@ -3,7 +3,6 @@ package gestionVol;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Objects;
-import java.util.TreeSet;
 
 /**
  * Classe representant une escale
@@ -21,32 +20,32 @@ public class Escale implements Comparable<Escale> {
     private Aeroport aeroport;
 
     /**
-     *  L'heure d'arrivée à l'escale
+     *  La date d'arrivée à l'escale
      */
-    private ZonedDateTime heureArrivee;
+    private ZonedDateTime dateArrivee;
 
     /**
-     *  L'heure de départ de l'escale
+     *  La date de départ de l'escale
      */
-    private ZonedDateTime heureDepart;
+    private ZonedDateTime dateDepart;
 
     /**
      * Constructeur de la classe Escale
      *
      * @param vol le vol concerné par l'escale
      * @param aeroport l'aéroport où le vol fait escale
-     * @param heureArrivee l'heure d'arrivée à l'escale
-     * @param heureDepart l'heure de départ de l'escale
-     * @exception IllegalArgumentException si le vol, l'aéroport, l'heure d'arrivée ou l'heure de départ est null
-     * @exception IllegalArgumentException si l'heure d'arrivée est après l'heure de départ
+     * @param dateArrivee la date d'arrivée à l'escale
+     * @param dateDepart la date de départ de l'escale
+     * @exception IllegalArgumentException si le vol, l'aéroport, la date d'arrivée ou la date de départ est null
+     * @exception IllegalArgumentException si la date d'arrivée est après la date de départ
      */
-    protected Escale(Vol vol, Aeroport aeroport, ZonedDateTime heureArrivee, ZonedDateTime heureDepart) {
-        if (vol == null || aeroport == null || heureArrivee == null || heureDepart == null) {
-            throw new IllegalArgumentException("vol, aeroport, heureArrivee and heureDepart cannot be null");
+    protected Escale(Vol vol, Aeroport aeroport, ZonedDateTime dateArrivee, ZonedDateTime dateDepart) {
+        if (vol == null || aeroport == null || dateArrivee == null || dateDepart == null) {
+            throw new IllegalArgumentException("vol, aeroport, dateArrivee and dateDepart cannot be null");
         }
 
-        if (heureArrivee.isAfter(heureDepart) || heureArrivee.isEqual(heureDepart)) {
-            throw new IllegalArgumentException("heureArrivee doit être avant heureDepart");
+        if (dateArrivee.isAfter(dateDepart) || dateArrivee.isEqual(dateDepart)) {
+            throw new IllegalArgumentException("dateArrivee doit être avant dateDepart");
         }
 
         this.vol = vol;
@@ -54,8 +53,8 @@ public class Escale implements Comparable<Escale> {
         this.aeroport = aeroport;
         this.aeroport.addEscaleWithoutBidirectional(this);
 
-        this.heureArrivee = heureArrivee;
-        this.heureDepart = heureDepart;
+        this.dateArrivee = dateArrivee;
+        this.dateDepart = dateDepart;
     }
 
     /**
@@ -93,83 +92,83 @@ public class Escale implements Comparable<Escale> {
     }
 
     /**
-     * Retourne l'heure d'arrivée à l'escale
+     * Retourne la date d'arrivée à l'escale
      *
-     * @return l'heure d'arrivée à l'escale
+     * @return la date d'arrivée à l'escale
      */
-    public ZonedDateTime getHeureArrivee() {
-        return heureArrivee;
+    public ZonedDateTime getDateArrivee() {
+        return dateArrivee;
     }
 
     /**
-     * Modifie l'heure d'arrivée à l'escale
+     * Modifie la date d'arrivée à l'escale
      *
-     * @param heureArrivee la nouvelle heure d'arrivée à l'escale
-     * @exception IllegalArgumentException si l'heure d'arrivée est après l'heure de départ
-     * @exception IllegalArgumentException si l'heure d'arrivée est avant l'heure de départ de l'escale précédente
-     * @exception IllegalArgumentException si l'heure d'arrivée est avant l'heure de départ du vol
+     * @param dateArrivee la nouvelle date d'arrivée à l'escale
+     * @exception IllegalArgumentException si la date d'arrivée est après la date de départ
+     * @exception IllegalArgumentException si la date d'arrivée est avant la date de départ de l'escale précédente
+     * @exception IllegalArgumentException si la date d'arrivée est avant la date de départ du vol
      */
-    public void setHeureArrivee(ZonedDateTime heureArrivee) {
-        if (heureArrivee == null) {
-            throw new IllegalArgumentException("heureArrivee cannot be null");
+    public void setDateArrivee(ZonedDateTime dateArrivee) {
+        if (dateArrivee == null) {
+            throw new IllegalArgumentException("dateArrivee cannot be null");
         }
 
-        if (heureArrivee.isAfter(this.heureDepart) || heureArrivee.isEqual(this.heureDepart)) {
-            throw new IllegalArgumentException("heureArrivee doit être avant heureDepart");
+        if (dateArrivee.isAfter(this.dateDepart) || dateArrivee.isEqual(this.dateDepart)) {
+            throw new IllegalArgumentException("dateArrivee doit être avant dateDepart");
         }
 
         Escale escalePrecedente = this.vol.getEscales().lower(this);
 
         if (escalePrecedente != null) {
-            if (escalePrecedente.getHeureDepart().isAfter(heureArrivee)
-                    || (escalePrecedente.getHeureDepart().isEqual(heureArrivee))) {
-                throw new IllegalArgumentException("heureArrivee doit être après l'heure de départ de l'escale précédente");
+            if (escalePrecedente.getDateDepart().isAfter(dateArrivee)
+                    || (escalePrecedente.getDateDepart().isEqual(dateArrivee))) {
+                throw new IllegalArgumentException("dateArrivee doit être après la date de départ de l'escale précédente");
             }
-        } else if (this.vol.getDateDepart().isAfter(heureArrivee) || this.vol.getDateDepart().isEqual(heureArrivee)) {
-            throw new IllegalArgumentException("heureArrivee doit être après l'heure de départ du vol");
+        } else if (this.vol.getDateDepart().isAfter(dateArrivee) || this.vol.getDateDepart().isEqual(dateArrivee)) {
+            throw new IllegalArgumentException("dateArrivee doit être après la date de départ du vol");
         }
 
-        this.heureArrivee = heureArrivee;
+        this.dateArrivee = dateArrivee;
     }
 
     /**
-     * Retourne l'heure de départ de l'escale
+     * Retourne la date de départ de l'escale
      *
-     * @return l'heure de départ de l'escale
+     * @return la date de départ de l'escale
      */
-    public ZonedDateTime getHeureDepart() {
-        return heureDepart;
+    public ZonedDateTime getDateDepart() {
+        return dateDepart;
     }
 
     /**
-     * Modifie l'heure de départ de l'escale
+     * Modifie la date de départ de l'escale
      *
-     * @param heureDepart la nouvelle heure de départ de l'escale
-     * @exception IllegalArgumentException si l'heure de départ est avant l'heure d'arrivée
-     * @exception IllegalArgumentException si l'heure de départ est après l'heure d'arrivée à l'escale suivante
-     * @exception IllegalArgumentException si l'heure de départ est après l'heure d'arrivée du vol
+     * @param dateDepart la nouvelle date de départ de l'escale
+     * @exception IllegalArgumentException si la date de départ est avant la date d'arrivée
+     * @exception IllegalArgumentException si la date de départ est après la date d'arrivée à l'escale suivante
+     * @exception IllegalArgumentException si la date de départ est après la date d'arrivée du vol
      */
-    public void setHeureDepart(ZonedDateTime heureDepart) {
-        if (heureDepart == null) {
-            throw new IllegalArgumentException("heureDepart cannot be null");
+    public void setDateDepart(ZonedDateTime dateDepart) {
+        if (dateDepart == null) {
+            throw new IllegalArgumentException("dateDepart cannot be null");
         }
 
-        if (heureDepart.isBefore(this.heureArrivee) || heureDepart.isEqual(this.heureArrivee)) {
-            throw new IllegalArgumentException("heureDepart doit être après heureArrivee");
+        if (dateDepart.isBefore(this.dateArrivee) || dateDepart.isEqual(this.dateArrivee)) {
+            throw new IllegalArgumentException("dateDepart doit être après dateArrivee");
         }
 
         Escale escaleSuivante = this.vol.getEscales().higher(this);
 
         if (escaleSuivante != null) {
-            if (escaleSuivante.getHeureArrivee().isBefore(heureDepart)
-                    || (escaleSuivante.getHeureArrivee().isEqual(heureDepart))) {
-                throw new IllegalArgumentException("heureDepart doit être avant l'heure d'arrivée de l'escale suivante");
+            if (escaleSuivante.getDateArrivee().isBefore(dateDepart)
+                    || (escaleSuivante.getDateArrivee().isEqual(dateDepart))) {
+                throw new IllegalArgumentException("dateDepart doit être avant la date d'arrivée de l'escale suivante");
             }
-        } else if (this.vol.getDateArrivee().isBefore(heureDepart) || this.vol.getDateArrivee().isEqual(heureDepart)) {
-            throw new IllegalArgumentException("heureDepart doit être avant l'heure d'arrivée du vol");
+        } else if (this.vol.getDateArrivee().isBefore(dateDepart) || this.vol.getDateArrivee().isEqual(dateDepart)) {
+            throw new IllegalArgumentException("dateDepart doit être avant la date d'arrivée du vol");
         }
 
-        this.heureDepart = heureDepart;
+        this.dateDepart = dateDepart;
     }
 
     /**
@@ -178,7 +177,7 @@ public class Escale implements Comparable<Escale> {
      * @return la durée de l'escale
      */
     public Duration getDuree() {
-        return Duration.between(heureArrivee, heureDepart);
+        return Duration.between(dateArrivee, dateDepart);
     }
 
     /**
@@ -192,7 +191,7 @@ public class Escale implements Comparable<Escale> {
 
     @Override
     public int compareTo(Escale escale) {
-        return heureArrivee.compareTo(escale.heureArrivee);
+        return dateArrivee.compareTo(escale.dateArrivee);
     }
 
     @Override
@@ -202,7 +201,7 @@ public class Escale implements Comparable<Escale> {
         Escale escale = (Escale) o;
         return Objects.equals(getVol(), escale.getVol()) &&
                 Objects.equals(getAeroport(), escale.getAeroport()) &&
-                Objects.equals(getHeureArrivee(), escale.getHeureArrivee()) &&
-                Objects.equals(getHeureDepart(), escale.getHeureDepart());
+                Objects.equals(getDateArrivee(), escale.getDateArrivee()) &&
+                Objects.equals(getDateDepart(), escale.getDateDepart());
     }
 }

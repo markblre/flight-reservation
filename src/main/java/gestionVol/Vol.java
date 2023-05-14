@@ -308,7 +308,7 @@ public class Vol {
         Escale escaleSuivante = this.escales.higher(nouvelleEscale);
 
         if(escaleSuivante != null) {
-            if(escaleSuivante.getHeureArrivee().isBefore(heureDepart) || escaleSuivante.getHeureArrivee().isEqual(heureDepart)) {
+            if(escaleSuivante.getDateArrivee().isBefore(heureDepart) || escaleSuivante.getDateArrivee().isEqual(heureDepart)) {
                 nouvelleEscale.removeEscale();
                 this.escales.remove(nouvelleEscale);
                 throw new IllegalArgumentException("L'escale doit se terminer avant la prochaine escale");
