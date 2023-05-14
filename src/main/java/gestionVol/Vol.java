@@ -443,6 +443,9 @@ public class Vol {
         this.depart = null;
         this.arrivee.removeVolAArriveeWithoutBidirectional(this);
         this.arrivee = null;
+        for (Escale escale : this.escales) {
+            escale.removeEscale();
+        }
         for (Reservation reservation : this.reservations) {
             reservation.annulerParCompagnie();
         }
