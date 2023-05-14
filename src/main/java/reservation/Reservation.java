@@ -125,6 +125,7 @@ public class Reservation {
      *
      * @param passagers le ou les passagers à ajouter
      * @exception IllegalArgumentException si il n'y a aucun passager à ajouter
+     * @exception IllegalArgumentException si un des passagers est déjà présent dans la réservation
      * @exception IllegalStateException si la réservation est payée, confirmée ou annulée
      */
     public void addPassagers(Passager... passagers) {
@@ -134,6 +135,9 @@ public class Reservation {
 
         if (this.etat == EtatReservation.EN_ATTENTE) {
             for (Passager passager : passagers) {
+                if (this.passagers.contains(passager)) {
+                    throw new IllegalArgumentException("Impossible d'ajouter un passager : le passager est déjà présent dans la réservation");
+                }
                 this.passagers.add(passager);
                 passager.addReservationWithoutBidirectional(this);
             }
